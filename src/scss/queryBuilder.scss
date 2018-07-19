@@ -1,4 +1,5 @@
 $white: #FFF;
+$red: rgba(255,0,0,0.4);
 $text-color: #333;
 $label-background: #444;
 $border-color: #EAEAEA;
@@ -213,6 +214,9 @@ $light-gray: #FAFAFA;
 		position: relative;
 		display: inline-block;
 		margin-bottom: 15px; 
+		&.query-builder-btn-remove{
+			background: $red;
+		}
 		&.no-margins {
 			margin: 0;
 		}

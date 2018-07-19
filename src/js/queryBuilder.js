@@ -9,8 +9,10 @@
 				'data': '=', // Object in which the query will be reflected
 				'columns': '=', //Columns for building query
 				'operations': '=', //Operations  which are to be applied on columns
+				'query': '='
 			},
 			link: function(scope, ele, attr) {
+				console.log("scope: ", scope)
 				var query = scope.data || {};
 				var getTemplates = templatesFactory.get;
 				var buildTemplate = templatesFactory.build;
@@ -35,6 +37,7 @@
 				}
 
 				scope.query = query;
+				// scope.data = scope.query
 				scope.currIndex = query.expression ? currIndexTemp[currIndexTemp.length - 1] : 0; // currIndex refers to the index of last sub query
 				query.expression = query.expression ? query.expression : null;  
 				query.operands = query.operands || [angular.copy(basicQuery)]; // if no operands are present then push a basicQuery to oprands array
@@ -58,6 +61,13 @@
 					ele.find('.query-builder-wrapper').append($compile(templates.operator)(scope));
 					ele.find('.query-builder-wrapper').append($compile(templates.operandSelection)(scope));
 					scope.query.expression = buildExpression();
+					scope.data = scope.query.expression;
+				}
+				//TODO:	Remover elemento e subquery
+				//Removes a new Sub Query
+				scope.removeQuery = function(index,event){
+					scope.query.operands(index,1)
+					console.log(index, event)
 				}
 
 				//Changes type of Sub QUery
@@ -74,8 +84,11 @@
 					operatorWrapper.find('.operator').text(newOperator);
 					operatorWrapper.removeClass('active');
 					scope.query.expression = buildExpression();
+					scope.data = scope.query.expression;
 					console.log(scope.query);
 				}
+
+				
 
 				//Calculates position of brackets and adds them in the DOM
 				scope.addBrackets = function(event) {
@@ -132,6 +145,7 @@
 					parent.removeClass('active');
 					getBracketIds();
 					scope.query.expression = buildExpression();
+					scope.data = scope.query.expression;
 				}
 
 				//Removes brackets corresponding to a sub query
@@ -143,6 +157,7 @@
 					parent.removeClass('active');
 					getBracketIds();
 					scope.query.expression = buildExpression();
+					scope.data = scope.query.expression;
 				}
 
 				//Gets the data-bracket-Ids of current brackets in the DOM
@@ -187,8 +202,8 @@
 				angular.element('.query-builder-wrapper').on('click', '.popover-parent', function(e) {
 					e.stopPropagation();
 				});
-				angular.element('body').on('click', function() {
-					angular.element('.query-builder-wrapper .popover-parent').removeClass('active');
+				angular.element('body').on('click', function(event) {
+					// angular.element('.query-builder-wrapper .popover-parent').removeClass('active');
 				})
 			}
 		}
@@ -262,7 +277,8 @@
 								'<textarea ng-model="query.operands[' + currIndex + '].custom" plaveholder="Enter custom sub query"></textarea>' +
 							'</div>' +
 							'<div class="done-btn-wrapper">' +
-								'<button class="query-builder-btn small no-margins" ng-click="togglePopover($event)">Done</button>' +
+								'<button class="query-builder-btn small no-margins query-builder-btn-remove" ng-click="removeQuery('+currIndex+', $event)">Remover</button>' +
+								'<button class="query-builder-btn small no-margins" ng-click="togglePopover($event)">Concluir</button>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
